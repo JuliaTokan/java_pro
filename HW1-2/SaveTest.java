@@ -3,7 +3,7 @@ package test_annotation_reflection;
 import java.io.File;
 import java.io.FileWriter;
 
-@SaveTo(path="/Users/yulia/Documents/projects_java/Java-Web/HW-2-Annotation-Reflection/test.txt")
+@SaveTo(path="test.txt")
 public class SaveTest {
     String text = "Saved!!!";
 
