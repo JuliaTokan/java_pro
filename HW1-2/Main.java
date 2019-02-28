@@ -7,7 +7,6 @@ public class Main {
 
     public static void main(String[] args) {
         SaveTest saveTest = new SaveTest();
-        //saveTest.save("/Users/yulia/Documents/projects_java/Java-Web/HW-2-Annotation-Reflection/test.txt");
         try {
             final Class<?> cls = SaveTest.class;
             if (cls.isAnnotationPresent(SaveTo.class)) {
