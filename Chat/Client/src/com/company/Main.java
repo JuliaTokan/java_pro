@@ -3,6 +3,7 @@ package com.company;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
+import java.lang.reflect.Array;
 import java.lang.reflect.Type;
 
 import com.google.gson.reflect.TypeToken;
@@ -16,13 +17,12 @@ import java.nio.charset.StandardCharsets;
 import java.util.*;
 
 public class Main {
-    public static String login;
+    private static String login;
 
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
-        System.out.println("Test: login = 'user', password = '123'");
         try {
-            login = logIn();
+            login = inform();
 
             Thread th = new Thread(new GetThread());
             th.setDaemon(true);
@@ -32,14 +32,20 @@ public class Main {
             while (true) {
                 String text = scanner.nextLine();
                 if (text.isEmpty()) break;
+
                 if (text.equals("#users")) {
                     usersList();
-                } else {
+                }
+                else if(text.equals("#status")){
+                    usersStatus();
+                }
+                else if (text.equals("#exit")) {
+                    exit();
+                }else {
                     String to = toUser(text);
                     text = text(text);
                     Message m = new Message(login, to, text);
                     int res = m.send(Utils.getURL() + "/add");
-
                     if (res != 200) { // 200 OK
                         System.out.println("HTTP error occured: " + res);
                         return;
@@ -51,6 +57,21 @@ public class Main {
         } finally {
             scanner.close();
         }
+    }
+
+    private static String inform(){
+        System.out.println("Hello!");
+        System.out.println("#users - all users\n#exit - go out\n#status - status users");
+        System.out.println("Enter 'sign up' if you want to create new account");
+        System.out.println("Enter 'sign in' if you have an account");
+        Scanner scanner = new Scanner(System.in);
+        String sign = scanner.nextLine();
+        if(sign.equals("sign up"))
+            return newUser();
+        if(sign.equals("sign in"))
+            return logIn();
+        System.exit(-1);
+        return "";
     }
 
     private static String logIn() {
@@ -74,7 +95,7 @@ public class Main {
         return login;
     }
 
-    /*private static String newUser(){
+    private static String newUser(){
         Scanner scanner = new Scanner(System.in);
         System.out.println("Enter your login: ");
         String login = scanner.nextLine();
@@ -83,12 +104,16 @@ public class Main {
         try {
             URL obj = new URL(Utils.getURL() + "/adduser?login=" + login + "&password=" + password);
             HttpURLConnection conn = (HttpURLConnection) obj.openConnection();
-            //conn.setRequestMethod("POST");
+            int res = conn.getResponseCode();
+            if (res != 200) {
+                System.out.println("Incorrect login or password");
+                System.exit(0);
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }
         return login;
-    }*/
+    }
 
     private static String toUser(String text) {
         if (!text.contains("@"))
@@ -114,18 +139,19 @@ public class Main {
                 byte[] buf = requestBodyToArray(is);
                 String strBuf = new String(buf, StandardCharsets.UTF_8);
 
-                List<String> list = new ArrayList<>();
+                List<String> list;
 
                 Type listType = new TypeToken<ArrayList<String>>() {
                 }.getType();
 
                 list = gson.fromJson(strBuf, listType);
+
                 if (list != null) {
-                    System.out.print("users:");
-                    for (int i = 0; i < list.size() - 1; i++) {
-                        System.out.print(list.get(i) + ", ");
+                    System.out.print("users: ");
+                    for(int i = 0; i<list.size()-1; i++){
+                        System.out.print(list.get(i)+", ");
                     }
-                    System.out.print(list.get(list.size() - 1) + "\n");
+                    System.out.println(list.get(list.size()-1));
                 }
             } finally {
                 is.close();
@@ -146,5 +172,54 @@ public class Main {
         } while (r != -1);
 
         return bos.toByteArray();
+    }
+
+    private static void exit(){
+        try {
+            URL obj = new URL(Utils.getURL() + "/exit?user=" + login);
+            HttpURLConnection conn = (HttpURLConnection) obj.openConnection();
+            int res = conn.getResponseCode();
+            if (res != 200) {
+                System.out.println("Error exit");
+                System.exit(0);
+            }
+            System.exit(0);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private static void usersStatus() {
+        final Gson gson = new GsonBuilder().create();
+        try {
+            URL url = new URL(Utils.getURL() + "/status");
+            HttpURLConnection http = (HttpURLConnection) url.openConnection();
+
+            InputStream is = http.getInputStream();
+            try {
+                byte[] buf = requestBodyToArray(is);
+                String strBuf = new String(buf, StandardCharsets.UTF_8);
+
+                Map<String, Boolean> list;
+
+                Type listType = new TypeToken<HashMap<String, Boolean>>() {
+                }.getType();
+
+                list = gson.fromJson(strBuf, listType);
+
+                if (list != null) {
+                    for(Map.Entry entry: list.entrySet()){
+                        System.out.print(entry.getKey()+" ");
+                        if(entry.getValue().equals(true))
+                            System.out.println("online");
+                        else System.out.println("offline");
+                    }
+                }
+            } finally {
+                is.close();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }
