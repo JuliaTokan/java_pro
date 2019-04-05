@@ -19,7 +19,11 @@
         <table border="1">
             <c:forEach items="${zips}" var="zip">
                 <tr>
-                    <td><c:out value="${zip.pathZipFile}"/></td>
+                    <td>
+                        <form action="/savezip" method="POST">
+                            <input type="submit" value="${zip.pathZipFile}" name="zipPath">
+                        </form>
+                    </td>
                 </tr>
             </c:forEach>
         </table>

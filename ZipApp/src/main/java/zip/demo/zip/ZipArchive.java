@@ -16,10 +16,13 @@ public class ZipArchive {
 
     private String pathZipFile;
 
+    private String pathOriginFile;
+
     private String login;
 
-    public ZipArchive(String pathZipFile, String login) {
+    public ZipArchive(String pathZipFile, String pathOriginFile, String login) {
         this.pathZipFile = pathZipFile;
+        this.pathOriginFile = pathOriginFile;
         this.login = login;
     }
 }

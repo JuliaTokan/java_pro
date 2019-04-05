@@ -9,4 +9,7 @@ import java.util.List;
 public interface ZipRepository extends JpaRepository<ZipArchive, Long> {
     @Query("SELECT z FROM ZipArchive z where z.login = :login")
     List<ZipArchive> findZipByLogin(@Param("login") String login);
+
+    @Query("SELECT z.pathOriginFile FROM ZipArchive z where z.pathZipFile = :zipPath")
+    String findOriginFilePath(@Param("zipPath") String zipPath);
 }

@@ -82,14 +82,21 @@ public class MyController {
     @RequestMapping(value = "/tozip", method = RequestMethod.POST)
     public String toZIP(@RequestParam("file") MultipartFile file) throws Exception {
         if (!file.isEmpty()) {
-            String zipPath = ZipUtil.toZip(file);
+            String zipPath = file.getOriginalFilename().substring(0,file.getOriginalFilename().indexOf('.'))+".zip";
             User user = (User)SecurityContextHolder
                     .getContext()
                     .getAuthentication()
                     .getPrincipal();
             String login = user.getUsername();
-            zipService.addZip(zipPath, login);
+            zipService.addZip(zipPath,file.getOriginalFilename(), login);
         }
+        return "redirect:/";
+    }
+
+    @RequestMapping(value = "/savezip", method = RequestMethod.POST)
+    public String saveZIP(@RequestParam("zipPath") String pathZip) throws Exception {
+        String filePath = zipService.findFileByZip(pathZip);
+        ZipUtil.toZip(filePath, pathZip);
         return "redirect:/";
     }
 }

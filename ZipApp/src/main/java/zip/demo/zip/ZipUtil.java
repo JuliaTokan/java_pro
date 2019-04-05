@@ -7,18 +7,27 @@ import org.springframework.web.multipart.MultipartFile;
 
 public class ZipUtil {
 
-    public static String toZip(MultipartFile file) throws Exception {
+    /*public static String toZip(MultipartFile file) throws Exception {
         String path = file.getOriginalFilename();
         path = path.substring(0,path.indexOf('.'));
         ZipOutputStream out = new ZipOutputStream(new FileOutputStream(path+".zip"));
         doZip(file, out);
         out.close();
         return path+".zip";
+    }*/
+
+    public static void toZip(String filePath, String zipPath) throws Exception {
+        File file = new File(filePath);
+        if(file.exists()) {
+            ZipOutputStream out = new ZipOutputStream(new FileOutputStream(zipPath));
+            doZip(file, out);
+            out.close();
+        }
     }
 
-    private static void doZip(MultipartFile file, ZipOutputStream out) throws IOException {
-        out.putNextEntry(new ZipEntry(file.getOriginalFilename()));
-        write(file.getInputStream(), out);
+    private static void doZip(File file, ZipOutputStream out) throws IOException {
+        out.putNextEntry(new ZipEntry(file.getPath()));
+        write(new FileInputStream(file), out);
     }
 
     private static void write(InputStream in, OutputStream out) throws IOException {

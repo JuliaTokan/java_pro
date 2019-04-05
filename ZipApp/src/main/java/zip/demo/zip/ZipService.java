@@ -12,8 +12,8 @@ public class ZipService {
     private ZipRepository zipRepository;
 
     @Transactional
-    public void addZip(String pathZip, String user) {
-        ZipArchive zipArchive = new ZipArchive(pathZip, user);
+    public void addZip(String pathZip,String parhOriginFile, String user) {
+        ZipArchive zipArchive = new ZipArchive(pathZip, parhOriginFile, user);
         zipRepository.save(zipArchive);
     }
 
@@ -21,5 +21,10 @@ public class ZipService {
     public List<ZipArchive> findZipByLogin(String login) {
         return zipRepository.findZipByLogin(login);
     }
+
+    @Transactional(readOnly = true)
+    public String findFileByZip(String pathZip) {
+        return zipRepository.findOriginFilePath(pathZip);
+    };
 
 }
