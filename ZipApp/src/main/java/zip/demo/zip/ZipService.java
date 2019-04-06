@@ -12,8 +12,8 @@ public class ZipService {
     private ZipRepository zipRepository;
 
     @Transactional
-    public void addZip(String pathZip,String parhOriginFile, String user) {
-        ZipArchive zipArchive = new ZipArchive(pathZip, parhOriginFile, user);
+    public void addZip(String pathZip, String user, byte[] file) {
+        ZipArchive zipArchive = new ZipArchive(pathZip, user, file);
         zipRepository.save(zipArchive);
     }
 
@@ -23,8 +23,8 @@ public class ZipService {
     }
 
     @Transactional(readOnly = true)
-    public String findFileByZip(String pathZip) {
-        return zipRepository.findOriginFilePath(pathZip);
+    public byte[] findFileByZip(String pathZip) {
+        return zipRepository.findOriginFile(pathZip);
     };
 
 }

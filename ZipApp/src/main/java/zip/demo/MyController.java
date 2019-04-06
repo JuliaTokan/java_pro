@@ -1,5 +1,6 @@
 package zip.demo;
 
+import org.apache.tomcat.util.http.fileupload.FileUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.encoding.ShaPasswordEncoder;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -15,8 +16,7 @@ import zip.demo.user.UserRole;
 import zip.demo.user.UserService;
 import zip.demo.zip.ZipService;
 import zip.demo.zip.ZipUtil;
-
-import java.util.zip.ZipEntry;
+import java.io.FileOutputStream;
 
 @Controller
 public class MyController {
@@ -88,15 +88,16 @@ public class MyController {
                     .getAuthentication()
                     .getPrincipal();
             String login = user.getUsername();
-            zipService.addZip(zipPath,file.getOriginalFilename(), login);
+            byte[] zipBytes = ZipUtil.toZip(file);
+            zipService.addZip(zipPath, login, zipBytes);
         }
         return "redirect:/";
     }
 
     @RequestMapping(value = "/savezip", method = RequestMethod.POST)
     public String saveZIP(@RequestParam("zipPath") String pathZip) throws Exception {
-        String filePath = zipService.findFileByZip(pathZip);
-        ZipUtil.toZip(filePath, pathZip);
+        byte[] file = zipService.findFileByZip(pathZip);
+        ZipUtil.saveZip(file, pathZip);
         return "redirect:/";
     }
 }

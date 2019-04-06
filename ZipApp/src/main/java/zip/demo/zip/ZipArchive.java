@@ -16,13 +16,15 @@ public class ZipArchive {
 
     private String pathZipFile;
 
-    private String pathOriginFile;
-
     private String login;
 
-    public ZipArchive(String pathZipFile, String pathOriginFile, String login) {
+    @Lob
+    @Column(columnDefinition = "BLOB")
+    private byte[] zipFile;
+
+    public ZipArchive(String pathZipFile, String login, byte[] file) {
         this.pathZipFile = pathZipFile;
-        this.pathOriginFile = pathOriginFile;
         this.login = login;
+        this.zipFile = file;
     }
 }
