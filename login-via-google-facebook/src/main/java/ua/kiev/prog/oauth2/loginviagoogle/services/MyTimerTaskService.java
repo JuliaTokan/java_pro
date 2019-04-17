@@ -20,7 +20,8 @@ public class MyTimerTaskService {
     @Autowired
     private JavaMailSender sender;
 
-    @Scheduled(cron = "0 */5 * * * *") //every 5 min
+    @Scheduled(cron = "0 */5 * * * *") //every 5 min for test
+    //@Scheduled(cron = "0 0 9 * * *")//every day at 9 am
     public void sendMailToUsers() {
         List<Task> tasks = generalService.findAll();
         for(Task task: tasks){
