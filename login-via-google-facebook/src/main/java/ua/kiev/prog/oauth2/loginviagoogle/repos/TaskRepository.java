@@ -11,5 +11,5 @@ public interface TaskRepository extends JpaRepository<Task, Long> {
     List<Task> findByAccountEmail(String email, Pageable pageable);
     Long countByAccountEmail(String email);
     void deleteById(Long ID);
-    void deleteByText(String text);
+    void deleteByAccountEmailAndText(String email, String text);
 }

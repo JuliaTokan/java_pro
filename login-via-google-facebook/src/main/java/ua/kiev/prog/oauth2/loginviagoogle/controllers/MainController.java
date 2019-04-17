@@ -65,9 +65,10 @@ public class MainController {
 
     @RequestMapping(value = "/delete", method = RequestMethod.POST)
     public void delete(@RequestParam(name = "toDelete[]", required = false)
-                                 String[] text) {
+                                 String[] text, OAuth2AuthenticationToken auth) {
+        String email = (String) auth.getPrincipal().getAttributes().get("email");
+        System.out.println(email);
         if (text != null && text.length > 0)
-            //userService.deleteUsers(ids);
-            generalService.deleteTasksByText(text);
+            generalService.deleteTasks(email, text);
     }
 }

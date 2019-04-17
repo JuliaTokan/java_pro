@@ -69,12 +69,10 @@ public class GeneralService {
     }
 
     @Transactional
-    public void deleteTasksByText(String[] text) {
-        if (text == null) return;
-
+    public void deleteTasks(String email, String[] text) {
+        if (text == null || email.isEmpty()) return;
         for (String str : text) {
-            //int id = taskRepository.findIdByText(str);
-            taskRepository.deleteByText(str);
+            taskRepository.deleteByAccountEmailAndText(email, str);
         }
     }
 
