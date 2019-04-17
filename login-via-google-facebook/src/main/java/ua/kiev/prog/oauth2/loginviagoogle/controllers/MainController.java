@@ -64,11 +64,12 @@ public class MainController {
     }
 
     @RequestMapping(value = "/delete", method = RequestMethod.POST)
-    public void delete(@RequestParam(name = "toDelete[]", required = false)
+    public ResponseEntity<ResultDTO> delete(@RequestParam(name = "toDelete[]", required = false)
                                  String[] text, OAuth2AuthenticationToken auth) {
         String email = (String) auth.getPrincipal().getAttributes().get("email");
         System.out.println(email);
         if (text != null && text.length > 0)
             generalService.deleteTasks(email, text);
+        return new ResponseEntity<>(new ResultDTO(), HttpStatus.OK);
     }
 }
