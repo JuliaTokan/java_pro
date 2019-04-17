@@ -15,6 +15,8 @@
         <div class="starter-template">
             <p>Welcome to task manager</p>
             <button type="button" class="btn btn-primary btn-lg" onclick="goToURL('${urlGoogle}');">Login via ${nameGoogle}</button>
+            <br>
+            <br>
             <button type="button" class="btn btn-primary btn-lg" onclick="goToURL('${urlFacebook}');">Login via ${nameFacebook}</button>
         </div>
     </main>
